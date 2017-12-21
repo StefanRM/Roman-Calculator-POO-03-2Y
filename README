@@ -1,0 +1,75 @@
+.___________. _______ .___  ___.      ___          _  _    
+|           ||   ____||   \/   |     /   \        | || |   
+`---|  |----`|  |__   |  \  /  |    /  ^  \       | || |_  
+    |  |     |   __|  |  |\/|  |   /  /_\  \      |__   _| 
+    |  |     |  |____ |  |  |  |  /  _____  \        | |   
+    |__|     |_______||__|  |__| /__/     \__\       |_|   
+                                                           
+Nume   : Maftei Stefan - Radu
+Grupa  : 324CD
+Materie: POO
+
+
+	Calculatorul cu numere romane a fost implementat folosind interfetele
+din schelet. Astfel, in clasa Server se vor primi ecuatiile, vor fi procesate
+si se va obtine lista de rezultate pentru datele de intrare primite.
+	Am utilizat urmatoarele design pattern-uri:
+1) Singleton
+	- utilizat pentru a restrictiona numarul de instantieri ale unei clase
+la un singur obiect (folosim o singura instanta a unui obiect in aplicatie);
+	- clasele care respecta acest design pattern sunt Server,
+BracketsFactory, OperandsFactory si OperatorsFactory;
+
+2) Factory
+	- utilizat pentru obiecte care genereaza instante de clase inrudite
+(implementeaza aceeasi interfata si au aceeasi logica);
+	- clasele care respecta acest design pattern sunt BracketsFactory,
+OperandsFactory si OperatorsFactory;
+
+3) Observer
+	- utilizat pentru a notifica Server-ul de o noua ecuatie de rezolvat;
+	- clasa care respecta acest design pattern este Server;
+	- mecanismul de functionare utilizat este de tipul Publisher-Subscriber;
+	- clasa Server este notificata prin clasa Evaluator (din folder-ul 
+/checker).
+
+
+	In clasa Server se primesc ecuatiile si lista de subscriberi (operatiile
+suportate de calculator). Ecuatia se imparte (split dupa spatiu) in componente
+(tokens). Se verifica fiecare componenta prin metodele de verificare din
+factories si astfel prin factory-ul corespunzator se creeaza un obiect cu
+proprietatea respectiva. Aceste obiecte sunt retinute intr-o lista
+commandTokens, cu elemente IToken (toate obiectele implementeaza o interfata
+care extinde aceasta interfata).
+	Sunt 3 factories:
+1) BracketsFactory
+	- genereaza instante de clase care reprezinta un tip de paranteza
+(rotunde, patrate, acolade) care pot fi deschise sau inchise.
+
+2) OperandsFactory
+	- genereaza instante de clase care reprezinta un tip de numar (roman
+sau arab); acest tip de clasa provine din modul lui de a fi obtinut;
+	- pentru a obtine un numar arab avem nevoie de echivalentul sau
+roman, si pentru a obtine un numar roman avem nevoie de echivalentul sau arab;
+	- constructorii claselor ArabNumber si RomanNumber folosesc functiile
+de conversie din factory (aceste functii de conversie intorc un Operand, clasa
+parinte pentru ArabNumber si RomanNumber);
+
+3) OperatorsFactory
+	-genereaza instante de clase care reprezinta un tip de operator
+(operatiile posibile pe care le poate efectua Server-ul);
+	- operatorii se impart in operatori unari si operatori binari, astfel
+sunt doua clase abstracte UnaryOperator si BinaryOperator care sunt extinse de
+operatori;
+	- operatorii au fiecare un simbol, o prioritate si metoda de calcul.
+
+
+	Folosind lista commandTokens se obtine o alta lista de IToken printr-o
+metoda de conversie in forma postfixata. In aceasta metoda se utilizeaza o
+stiva care este membru privat al clasei Server; algoritmul este cel prezentat
+in cadrul cursului de Structuri de Date. Lista obtinuta este evaluata, folosind
+din nou aceeasi stiva, algoritmul fiind cel prezentat tot in cadrul cursului de
+Structuri de Date. Rezultatul obtinut in cadrul evaluarii formei postfixate se
+adauga in lista de rezultate.
+	Lista de rezultate va fi evaluata de clasa Evaluator, comparand cu
+liniile din fisierul de referinta.
